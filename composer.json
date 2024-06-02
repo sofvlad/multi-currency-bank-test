@@ -1,0 +1,9 @@
+{
+    "name": "sofvlad/multi-currency-bank-test",
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
+}
