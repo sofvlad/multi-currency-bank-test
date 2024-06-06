@@ -5,6 +5,7 @@ namespace App\Bank\Account;
 
 use App\Bank\Money;
 use App\Bank\MoneyInterface;
+use App\Enums\CurrencyTypes;
 
 interface CurrencyAccountInterface
 {
@@ -18,9 +19,9 @@ interface CurrencyAccountInterface
     /**
      * Get currency code
      *
-     * @return string
+     * @return CurrencyTypes
     */
-    public function getCurrencyCode(): string;
+    public function getCurrencyCode(): CurrencyTypes;
 
     /**
      * Deposit the money to account
@@ -34,8 +35,8 @@ interface CurrencyAccountInterface
     /**
      * Deposit the money to account
      *
-     * @param Money $money
-     MoneyInterface
+     * @param MoneyInterface $money
+     * 
      * @return self
      */
     public function withdraw(MoneyInterface $money): self;

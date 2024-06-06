@@ -5,11 +5,12 @@ namespace App\Bank\Account;
 
 use App\Bank\MoneyFactory;
 use App\Bank\MoneyInterface;
+use App\Enums\CurrencyTypes;
 
 class CurrencyAccount implements CurrencyAccountInterface
 {
     public function __construct(
-        private string $currencyCode,
+        private CurrencyTypes $currencyCode,
         private float $balance = 0
     ) {
     }
@@ -25,7 +26,7 @@ class CurrencyAccount implements CurrencyAccountInterface
     /**
      * @inheritdoc
      */
-    public function getCurrencyCode(): string
+    public function getCurrencyCode(): CurrencyTypes
     {
         return $this->currencyCode;
     }

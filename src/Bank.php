@@ -8,16 +8,17 @@ use App\Bank\MoneyInterface;
 use App\Bank\MultiCurrencyAccountFactory;
 use App\Bank\MultiCurrencyAccountInterface;
 use App\Bank\RatesConfigInterface;
+use App\Enums\CurrencyTypes;
 
 class Bank implements BankInterface
 {
     /**
     * @param RatesConfigInterface $ratesConfig
-    * @param string $defaultCurrencyAccount
+    * @param CurrencyTypes $defaultCurrencyAccount
     */
     public function __construct(
         private RatesConfigInterface $ratesConfig,
-        private string $defaultCurrencyAccount
+        private CurrencyTypes $defaultCurrencyAccount
     ) {
     }
 
@@ -35,7 +36,7 @@ class Bank implements BankInterface
     /**
      * @inheritdoc
      */
-    public function getCurrencyRate(string $currencyFrom, string $currencyTo): float
+    public function getCurrencyRate(CurrencyTypes $currencyFrom, CurrencyTypes $currencyTo): float
     {
         return $this->ratesConfig->getCurrencyRate($currencyFrom, $currencyTo);
     }
@@ -43,7 +44,7 @@ class Bank implements BankInterface
     /**
      * @inheritdoc
      */
-    public function setCurrencyRate(string $currencyFrom, string $currencyTo, float $rate): self
+    public function setCurrencyRate(CurrencyTypes $currencyFrom, CurrencyTypes $currencyTo, float $rate): self
     {
         $this->ratesConfig->setCurrencyRate($currencyFrom, $currencyTo, $rate);
 
@@ -57,11 +58,11 @@ class Bank implements BankInterface
      * the same money instance otherwise, it will create a new one with the converted data.
      *
      * @param MoneyInterface $money
-     * @param string $currencyCode
+     * @param CurrencyTypes $currencyCode
      *
      * @return MoneyInterface
      */
-    public function convertMoney(MoneyInterface $money, string $currencyCode): MoneyInterface
+    public function convertMoney(MoneyInterface $money, CurrencyTypes $currencyCode): MoneyInterface
     {
         if ($money->getCurrencyCode() == $currencyCode) {
             return $money;

@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Bank;
 
+use App\Enums\CurrencyTypes;
+
 class RatesConfig implements RatesConfigInterface
 {
     /**
@@ -16,10 +18,10 @@ class RatesConfig implements RatesConfigInterface
     /**
      * @inheritdoc
      */
-    public function getCurrencyRate(string $currencyFrom, string $currencyTo): float
+    public function getCurrencyRate(CurrencyTypes $currencyFrom, CurrencyTypes $currencyTo): float
     {
-        $currencyFrom = strtoupper($currencyFrom);
-        $currencyTo = strtoupper($currencyTo);
+        $currencyFrom = $currencyFrom->value;
+        $currencyTo = $currencyTo->value;
         if (empty($this->data[$currencyFrom])
             || empty($this->data[$currencyFrom][$currencyTo])
         ) {
@@ -36,10 +38,10 @@ class RatesConfig implements RatesConfigInterface
     /**
      * @inheritdoc
      */
-    public function setCurrencyRate(string $currencyFrom, string $currencyTo, float $rate): self
+    public function setCurrencyRate(CurrencyTypes $currencyFrom, CurrencyTypes $currencyTo, float $rate): self
     {
-        $currencyFrom = strtoupper($currencyFrom);
-        $currencyTo = strtoupper($currencyTo);
+        $currencyFrom = $currencyFrom->value;
+        $currencyTo = $currencyTo->value;
         if (empty($this->data[$currencyFrom])) {
             $this->data[$currencyFrom] = [];
         }
@@ -56,26 +58,5 @@ class RatesConfig implements RatesConfigInterface
         }
 
         return $this;
-    }
-
-    /**
-     * Convert money by currency code.
-     *
-     * If currency of money equal currencyCode param then this method return
-     * the same money instance otherwise, it will create a new one with the converted data.
-     *
-     * @param MoneyInterface $money
-     * @param string $convertCurrencyCode
-     *
-     * @return MoneyInterface
-     */
-    public function convertMoney(MoneyInterface $money, string $currencyCode): MoneyInterface
-    {
-        if ($money->getCurrencyCode() == $currencyCode) {
-            return $money;
-        }
-        $rate = $this->ratesConfig->getCurrencyRate($money->getCurrencyCode(), $currencyCode);
-
-        return MoneyFactory::create($currencyCode, $money->getAmount() * $rate);
     }
 }

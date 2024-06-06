@@ -3,26 +3,38 @@ declare(strict_types=1);
 
 namespace App\Bank;
 
+use App\Enums\CurrencyTypes;
+
 class Money implements MoneyInterface
 {
     private float $amount = 0;
 
-    private string $currencyCode;
-
+    /**
+     * @param CurrencyTypes $currencyCode
+     * @param float $amount
+     */
     public function __construct(
-        string $currencyCode,
+        private CurrencyTypes $currencyCode,
         float $amount = 0
     ) {
+        if ($amount < 0) {
+            throw new \Exception('Amount of money must be positive');
+        }
         $this->amount = $amount;
-        $this->currencyCode = strtoupper($currencyCode);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getAmount(): float
     {
         return $this->amount;
     }
 
-    public function getCurrencyCode(): string
+    /**
+     * @inheritdoc
+     */
+    public function getCurrencyCode(): CurrencyTypes
     {
         return $this->currencyCode;
     }

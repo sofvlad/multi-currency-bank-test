@@ -7,6 +7,7 @@ use App\Bank\Account\CurrencyAccount;
 use App\Bank\Account\CurrencyAccountFactory;
 use App\Bank\Account\CurrencyAccountInterface;
 use App\BankInterface;
+use App\Enums\CurrencyTypes;
 
 class MultiCurrencyAccount implements MultiCurrencyAccountInterface
 {
@@ -16,9 +17,9 @@ class MultiCurrencyAccount implements MultiCurrencyAccountInterface
     private array $accounts = [];
 
     /**
-     * @var string|null $defaultCurrencyCode
+     * @var CurrencyTypes|null $defaultCurrencyCode
      */
-    private ?string $defaultCurrencyCode = null;
+    private ?CurrencyTypes $defaultCurrencyCode = null;
 
     /**
      * @param BankInterface $bank
@@ -31,9 +32,9 @@ class MultiCurrencyAccount implements MultiCurrencyAccountInterface
     /**
      * @inheritdoc
      */
-    public function setDefaultCurrencyCode(string $value): self
+    public function setDefaultCurrencyCode(CurrencyTypes $value): self
     {
-        $this->defaultCurrencyCode = strtoupper($value);
+        $this->defaultCurrencyCode = $value;
 
         return $this;
     }
@@ -41,7 +42,7 @@ class MultiCurrencyAccount implements MultiCurrencyAccountInterface
     /**
      * @inheritdoc
      */
-    public function getDefaultCurrencyCode(): ?string
+    public function getDefaultCurrencyCode(): ?CurrencyTypes
     {
         return $this->defaultCurrencyCode;
     }
@@ -49,12 +50,12 @@ class MultiCurrencyAccount implements MultiCurrencyAccountInterface
     /**
      * Create currency account object
      *
-     * @param string $currencyCode
+     * @param CurrencyTypes $currencyCode
      * @param float $initialBalance
      *
      * @return CurrencyAccountInterface
      */
-    private function createCurrencyAccount(string $currencyCode, float $initialBalance = 0): CurrencyAccountInterface
+    private function createCurrencyAccount(CurrencyTypes $currencyCode, float $initialBalance = 0): CurrencyAccountInterface
     {
         return CurrencyAccountFactory::create($currencyCode, $initialBalance);
     }
@@ -62,27 +63,25 @@ class MultiCurrencyAccount implements MultiCurrencyAccountInterface
     /**
      * Get currency account
      *
-     * @param string $currencyCode
+     * @param CurrencyTypes $currencyCode
      *
      * @return CurrencyAccountInterface
      */
-    private function getCurrencyAccount(string $currencyCode): CurrencyAccountInterface
+    private function getCurrencyAccount(CurrencyTypes $currencyCode): CurrencyAccountInterface
     {
-        $currencyCode = strtoupper($currencyCode);
-        if (empty($this->accounts[$currencyCode])) {
+        if (empty($this->accounts[$currencyCode->value])) {
             throw new \Exception(sprintf('%s currency account not exist', $currencyCode));
         }
 
-        return $this->accounts[$currencyCode];
+        return $this->accounts[$currencyCode->value];
     }
 
     /**
      * @inheritdoc
      */
-    public function addCurrencyAccount(string $currencyCode, float $initialBalance = 0): self
+    public function addCurrencyAccount(CurrencyTypes $currencyCode, float $initialBalance = 0): self
     {
-        $currencyCode = strtoupper($currencyCode);
-        $this->accounts[$currencyCode] = $this->createCurrencyAccount($currencyCode, $initialBalance);
+        $this->accounts[$currencyCode->value] = $this->createCurrencyAccount($currencyCode, $initialBalance);
         if (empty($this->getDefaultCurrencyCode())) {
             $this->setDefaultCurrencyCode($currencyCode);
         }
@@ -93,17 +92,17 @@ class MultiCurrencyAccount implements MultiCurrencyAccountInterface
     /**
      * Remove currency account
      *
-     * @param string $currencyCode
+     * @param CurrencyTypes $currencyCode
      *
      * @return self
      * @throws \Exception
      */
-    public function removeCurrencyAccount(string $currencyCode): self
+    public function removeCurrencyAccount(CurrencyTypes $currencyCode): self
     {
         $account = $this->getCurrencyAccount($currencyCode);
         $balance = $account->getBalance();
         $this->moveBalance($balance->getCurrencyCode(), $this->getDefaultCurrencyCode());
-        unset($this->accounts[strtoupper($currencyCode)]);
+        unset($this->accounts[$currencyCode->value]);
 
         return $this;
     }
@@ -119,7 +118,7 @@ class MultiCurrencyAccount implements MultiCurrencyAccountInterface
     /**
      * @inheritdoc
      */
-    public function getBanalce(?string $currencyCode = null): MoneyInterface
+    public function getBanalce(?CurrencyTypes $currencyCode = null): MoneyInterface
     {
         $currencyCode = $currencyCode ?: $this->getDefaultCurrencyCode();
         if (empty($currencyCode)) {
@@ -137,12 +136,12 @@ class MultiCurrencyAccount implements MultiCurrencyAccountInterface
     /**
      * Move balance from one surrency account to second currency account
      *
-     * @param string $currencyCodeFrom
-     * @param string $currencyCodeTo
+     * @param CurrencyTypes $currencyCodeFrom
+     * @param CurrencyTypes $currencyCodeTo
      *
      * @return self
      */
-    private function moveBalance(string $currencyCodeFrom, string $currencyCodeTo): self
+    private function moveBalance(CurrencyTypes $currencyCodeFrom, CurrencyTypes $currencyCodeTo): self
     {
         if ($currencyCodeFrom == $currencyCodeTo) {
             return $this;

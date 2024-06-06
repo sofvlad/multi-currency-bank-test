@@ -5,6 +5,7 @@ namespace App;
 
 use App\Bank\MoneyInterface;
 use App\Bank\MultiCurrencyAccountInterface;
+use App\Enums\CurrencyTypes;
 
 interface BankInterface
 {
@@ -18,23 +19,23 @@ interface BankInterface
     /**
      * Get bank currency rate value
      *
-     * @param string $currencyFrom
-     * @param string $currencyTo
+     * @param CurrencyTypes $currencyFrom
+     * @param CurrencyTypes $currencyTo
      *
      * @return float
      */
-    public function getCurrencyRate(string $currencyFrom, string $currencyTo): float;
+    public function getCurrencyRate(CurrencyTypes $currencyFrom, CurrencyTypes $currencyTo): float;
 
     /**
      * Set bank currency rate value in both directions
      *
-     * @param string $currencyFrom
-     * @param string $currencyTo
+     * @param CurrencyTypes $currencyFrom
+     * @param CurrencyTypes $currencyTo
      * @param float $rate
      *
      * @return self
      */
-    public function setCurrencyRate(string $currencyFrom, string $currencyTo, float $rate): self;
+    public function setCurrencyRate(CurrencyTypes $currencyFrom, CurrencyTypes $currencyTo, float $rate): self;
 
     /**
      * Convert money by currency code.
@@ -47,5 +48,5 @@ interface BankInterface
      *
      * @return MoneyInterface
      */
-    public function convertMoney(MoneyInterface $money, string $currencyCode): MoneyInterface;
+    public function convertMoney(MoneyInterface $money, CurrencyTypes $currencyCode): MoneyInterface;
 }

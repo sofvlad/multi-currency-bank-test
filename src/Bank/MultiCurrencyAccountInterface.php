@@ -3,60 +3,60 @@ declare(strict_types=1);
 
 namespace App\Bank;
 
-use App\Bank\Account\CurrencyAccountInterface;
+use App\Enums\CurrencyTypes;
 
 interface MultiCurrencyAccountInterface
 {
     /**
      * Get default currency code
      *
-     * @param string $value
+     * @param CurrencyTypes $value
      *
      * @return self
      */
-    public function setDefaultCurrencyCode(string $value): self;
+    public function setDefaultCurrencyCode(CurrencyTypes $value): self;
 
     /**
      * Get default currency code
      *
-     * @return string|null
+     * @return CurrencyTypes|null
      */
-    public function getDefaultCurrencyCode(): ?string;
+    public function getDefaultCurrencyCode(): ?CurrencyTypes;
 
     /**
      * Add currency account
      *
-     * @param string $currencyCode
+     * @param CurrencyTypes $currencyCode
      * @param float $initialBalance
      *
      * @return self
      */
-    public function addCurrencyAccount(string $currencyCode, float $initialBalance = 0): self;
+    public function addCurrencyAccount(CurrencyTypes $currencyCode, float $initialBalance = 0): self;
 
     /**
      * Remove currency account
      *
-     * @param string $currencyCode
+     * @param CurrencyTypes $currencyCode
      *
      * @return self
      */
-    public function removeCurrencyAccount(string $currencyCode): self;
+    public function removeCurrencyAccount(CurrencyTypes $currencyCode): self;
 
     /**
      * Get supported accounts
      *
-     * @return string[]
+     * @return CurrencyTypes[]
      */
     public function getSupportedAccounts(): array;
 
     /**
      * Get balance by currency code or default currency code if you not set currencyCode param
      *
-     * @param string|null $currencyCode
+     * @param CurrencyTypes|null $currencyCode
      *
      * @return MoneyInterface
      */
-    public function getBanalce(?string $currencyCode = null): MoneyInterface;
+    public function getBanalce(?CurrencyTypes $currencyCode = null): MoneyInterface;
 
     /**
      * Deposit the money to account
